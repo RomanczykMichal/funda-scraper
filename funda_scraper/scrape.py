@@ -24,6 +24,8 @@ class FundaScraper:
         want_to: str = "buy",
         n_pages: int = 1,
         find_past: bool = False,
+        pricemin: int = 0,
+        pricemax: int = None
     ):
         self.area = area.lower().replace(" ", "-") if isinstance(area, str) else area
         self.want_to = want_to
@@ -34,6 +36,8 @@ class FundaScraper:
         self.clean_df = pd.DataFrame()
         self.base_url = config.base_url
         self.selectors = config.css_selector
+        self.pricerange = f"{pricemin}-{pricemax}"
+
 
     def __repr__(self):
         return (
@@ -48,13 +52,13 @@ class FundaScraper:
         """Return the corresponding urls."""
         if self.to_buy:
             return {
-                "close": f"{self.base_url}/koop/verkocht/{self.area}/",
-                "open": f"{self.base_url}/koop/{self.area}/",
+                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.pricerange}/",
+                "open": f"{self.base_url}/koop/{self.area}/{self.pricerange}/",
             }
         else:
             return {
-                "close": f"{self.base_url}/huur/{self.area}/verhuurd/",
-                "open": f"{self.base_url}/huur/{self.area}/",
+                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.pricerange}/",
+                "open": f"{self.base_url}/huur/{self.area}/{self.pricerange}/",
             }
 
     @property
@@ -237,5 +241,6 @@ class FundaScraper:
 
 if __name__ == "__main__":
     scraper = FundaScraper(area="amsterdam", want_to="rent", find_past=False, n_pages=1)
+    print(scraper.site_url)
     df = scraper.run()
-    print(df.head())
+    print(df["price"])
