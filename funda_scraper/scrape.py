@@ -24,8 +24,8 @@ class FundaScraper:
         want_to: str = "buy",
         n_pages: int = 1,
         find_past: bool = False,
-        pricemin: int = 0,
-        pricemax: int = None,
+        price_min: int = 0,
+        price_max: int = None,
         area_range: int = 0,
         log_disabled: bool = False
     ):
@@ -38,7 +38,7 @@ class FundaScraper:
         self.clean_df = pd.DataFrame()
         self.base_url = config.base_url
         self.selectors = config.css_selector
-        self.pricerange = f"{pricemin}-{pricemax}"
+        self.price_range = f"{price_min}-{price_max}"
         self.area_range = f"+{area_range}km"
         self.log_disabled = log_disabled
         logger.disabled = log_disabled
@@ -57,13 +57,13 @@ class FundaScraper:
         """Return the corresponding urls."""
         if self.to_buy:
             return {
-                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.pricerange}/{self.area_range}/",
-                "open": f"{self.base_url}/koop/{self.area}/{self.pricerange}/{self.area_range}/",
+                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.price_range}/{self.area_range}/",
+                "open": f"{self.base_url}/koop/{self.area}/{self.price_range}/{self.area_range}/",
             }
         else:
             return {
-                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.pricerange}/{self.area_range}/",
-                "open": f"{self.base_url}/huur/{self.area}/{self.pricerange}/{self.area_range}/",
+                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.price_range}/{self.area_range}/",
+                "open": f"{self.base_url}/huur/{self.area}/{self.price_range}/{self.area_range}/",
             }
 
     @property
