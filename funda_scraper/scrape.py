@@ -192,6 +192,7 @@ class FundaScraper:
 
         # Scrape pages with multiprocessing to improve efficiency
         pools = mp.cpu_count()
+        print(self.links)
         content = process_map(self.scrape_from_url, self.links, max_workers=pools)
 
         for i, c in enumerate(content):
@@ -238,8 +239,8 @@ class FundaScraper:
             self.clean_df = clean_df
             if save:
                 self.save_csv(self.clean_df, filepath)
+            logger.info("*** Done! ***")
             return clean_df
-        logger.info("*** Done! ***")
 
 
 if __name__ == "__main__":
