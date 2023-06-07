@@ -29,6 +29,7 @@ keep_cols:
     - ym_list
     - year_list
     - descrip
+    - url
 css_selector:
   url: none
   price: ".object-header__price"
