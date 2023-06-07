@@ -38,6 +38,7 @@ class FundaScraper:
         self.base_url = config.base_url
         self.selectors = config.css_selector
         self.pricerange = f"{pricemin}-{pricemax}"
+        self.log_disabled = log_disabled
         logger.disabled = log_disabled
 
 
@@ -114,7 +115,7 @@ class FundaScraper:
 
         urls = []
         main_url = self.site_url["close"] if self.find_past else self.site_url["open"]
-        for i in tqdm(range(0, self.n_pages + 1)):
+        for i in tqdm(range(0, self.n_pages + 1), disable=self.log_disabled):
             item_list = self._get_links_from_one_page(main_url + f"p{i}")
             if len(item_list) == 0:
                 self.n_pages = i
