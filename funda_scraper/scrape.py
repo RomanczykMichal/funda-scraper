@@ -27,6 +27,7 @@ class FundaScraper:
         price_min: int = 0,
         price_max: int = None,
         area_range: int = 0,
+        sort_type: str = None,
         log_disabled: bool = False
     ):
         self.area = area.lower().replace(" ", "-") if isinstance(area, str) else area
@@ -40,6 +41,7 @@ class FundaScraper:
         self.selectors = config.css_selector
         self.price_range = f"{price_min}-{price_max}"
         self.area_range = f"+{area_range}km"
+        self.sort_type = f"{sort_type}/" if sort_type is not None else ""
         self.log_disabled = log_disabled
         logger.disabled = log_disabled
 
@@ -57,13 +59,13 @@ class FundaScraper:
         """Return the corresponding urls."""
         if self.to_buy:
             return {
-                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.price_range}/{self.area_range}/",
-                "open": f"{self.base_url}/koop/{self.area}/{self.price_range}/{self.area_range}/",
+                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.price_range}/{self.area_range}/{self.sort_type}",
+                "open": f"{self.base_url}/koop/{self.area}/{self.price_range}/{self.area_range}/{self.sort_type}",
             }
         else:
             return {
-                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.price_range}/{self.area_range}/",
-                "open": f"{self.base_url}/huur/{self.area}/{self.price_range}/{self.area_range}/",
+                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.price_range}/{self.area_range}/{self.sort_type}",
+                "open": f"{self.base_url}/huur/{self.area}/{self.price_range}/{self.area_range}/{self.sort_type}",
             }
 
     @property
