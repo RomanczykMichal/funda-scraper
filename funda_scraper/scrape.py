@@ -25,7 +25,8 @@ class FundaScraper:
         n_pages: int = 1,
         find_past: bool = False,
         pricemin: int = 0,
-        pricemax: int = None
+        pricemax: int = None,
+        log_disabled: bool = False
     ):
         self.area = area.lower().replace(" ", "-") if isinstance(area, str) else area
         self.want_to = want_to
@@ -37,6 +38,7 @@ class FundaScraper:
         self.base_url = config.base_url
         self.selectors = config.css_selector
         self.pricerange = f"{pricemin}-{pricemax}"
+        logger.disabled = log_disabled
 
 
     def __repr__(self):
