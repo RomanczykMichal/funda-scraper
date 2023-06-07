@@ -26,6 +26,7 @@ class FundaScraper:
         find_past: bool = False,
         pricemin: int = 0,
         pricemax: int = None,
+        area_range: int = 0,
         log_disabled: bool = False
     ):
         self.area = area.lower().replace(" ", "-") if isinstance(area, str) else area
@@ -38,6 +39,7 @@ class FundaScraper:
         self.base_url = config.base_url
         self.selectors = config.css_selector
         self.pricerange = f"{pricemin}-{pricemax}"
+        self.area_range = f"+{area_range}km"
         self.log_disabled = log_disabled
         logger.disabled = log_disabled
 
@@ -55,13 +57,13 @@ class FundaScraper:
         """Return the corresponding urls."""
         if self.to_buy:
             return {
-                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.pricerange}/",
-                "open": f"{self.base_url}/koop/{self.area}/{self.pricerange}/",
+                "close": f"{self.base_url}/koop/verkocht/{self.area}/{self.pricerange}/{self.area_range}/",
+                "open": f"{self.base_url}/koop/{self.area}/{self.pricerange}/{self.area_range}/",
             }
         else:
             return {
-                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.pricerange}/",
-                "open": f"{self.base_url}/huur/{self.area}/{self.pricerange}/",
+                "close": f"{self.base_url}/huur/{self.area}/verhuurd/{self.pricerange}/{self.area_range}/",
+                "open": f"{self.base_url}/huur/{self.area}/{self.pricerange}/{self.area_range}/",
             }
 
     @property
@@ -192,7 +194,6 @@ class FundaScraper:
 
         # Scrape pages with multiprocessing to improve efficiency
         pools = mp.cpu_count()
-        print(self.links)
         content = process_map(self.scrape_from_url, self.links, max_workers=pools)
 
         for i, c in enumerate(content):
