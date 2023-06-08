@@ -125,7 +125,7 @@ class FundaScraper:
                 self.n_pages = i
                 break
             urls += item_list
-        urls = list(set(urls))
+        urls = list(dict.fromkeys(urls))
         logger.info(
             f"*** Got all the urls. {len(urls)} houses found in {self.n_pages} pages. ***"
         )
