@@ -11,7 +11,7 @@ from funda_scraper.preprocess import preprocess_data
 from funda_scraper.utils import logger
 from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
-
+import re
 
 class FundaScraper:
     """
@@ -146,18 +146,12 @@ class FundaScraper:
         response = requests.get(url, headers=config.header)
         soup = BeautifulSoup(response.text, "lxml")
 
-        # Get the value according to respective CSS selectors
-        list_since_selector = (
-            self.selectors.listed_since
-            if self.to_buy
-            else ".fd-align-items-center:nth-child(7) span"
-        )
         result = [
             url,
             self.get_value(soup, self.selectors.price),
             self.get_value(soup, self.selectors.address),
             self.get_value(soup, self.selectors.descrip),
-            self.get_value(soup, list_since_selector).replace("\n", ""),
+            self.fetch_list_since(response),
             self.get_value(soup, self.selectors.zip_code)
             .replace("\n", "")
             .replace("\r        ", ""),
@@ -187,6 +181,19 @@ class FundaScraper:
         ]
 
         return result
+
+    def fetch_list_since(self, response):
+        list_since = "na"
+        iterator = response.iter_lines()
+        for line in iterator:
+            if "Listed since" in str(line):
+                break
+        next(iterator, "")
+        html_line = str(next(iterator, ""))
+        result = re.search('<span class="">(.*)</span>', html_line)
+        if result:
+            list_since = result.group(1).replace("\n", "")
+        return list_since
 
     def scrape_pages(self) -> None:
         """Scrape all the content acoss multiple pages."""

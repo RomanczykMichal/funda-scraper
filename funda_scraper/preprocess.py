@@ -121,7 +121,7 @@ def clean_list_date(x: str) -> Any:
         return "na"
 
 
-def preprocess_data(df: pd.DataFrame, is_past: bool) -> pd.DataFrame:
+def preprocess_data(df: pd.DataFrame, is_past: bool, ) -> pd.DataFrame:
     """
     Clean the raw dataframe from scraping.
     Indicate whether it includes historical data sicne the columns would be different.
@@ -138,14 +138,11 @@ def preprocess_data(df: pd.DataFrame, is_past: bool) -> pd.DataFrame:
     # Info
     df["house_id"] = df["url"].apply(lambda x: int(x.split("/")[-2].split("-")[1]))
     df["house_type"] = df["url"].apply(lambda x: x.split("/")[-2].split("-")[0])
-    df = df[df["house_type"].isin(["appartement", "huis"])]
 
     # Price
     price_col = "price_sold" if is_past else "price"
     df["price"] = df[price_col].apply(clean_price)
-    df = df[df["price"] != 0]
     df["living_area"] = df["living_area"].apply(clean_living_area)
-    df = df[df["living_area"] != 0]
     df["price_m2"] = round(df.price / df.living_area, 1)
 
     # Location
@@ -175,9 +172,7 @@ def preprocess_data(df: pd.DataFrame, is_past: bool) -> pd.DataFrame:
 
     else:
         # Only check past data
-        df = df[(df["date_sold"] != "na") & (df["date_list"] != "na")]
         df["date_sold"] = df["date_sold"].apply(map_dutch_month)
-        df = df.dropna()
         df["date_list"] = pd.to_datetime(df["date_list"])
         df["date_sold"] = pd.to_datetime(df["date_sold"])
         df["ym_sold"] = df["date_sold"].apply(lambda x: x.to_period("M").to_timestamp())
