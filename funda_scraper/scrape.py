@@ -88,12 +88,10 @@ class FundaScraper:
     def _get_links_from_one_page(url: str) -> List[str]:
         """Scrape all the available housing items from one Funda search page."""
         response = requests.get(url, headers=config.header)
-        print('response')
-        print(response)
         soup = BeautifulSoup(response.text, "lxml")
         house = soup.find_all(attrs={"data-object-url-tracking": "resultlist"})
         item_list = [h.get("href") for h in house]
-        return list(set(item_list))
+        return list(dict.fromkeys(item_list))
 
     def init(
         self,
